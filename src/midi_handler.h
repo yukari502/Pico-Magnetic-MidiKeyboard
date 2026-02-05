@@ -20,6 +20,9 @@ void send_midi_note_on(uint8_t channel, uint8_t note, uint8_t velocity);
 // Send MIDI Note Off
 void send_midi_note_off(uint8_t channel, uint8_t note);
 
+// Send Polyphonic Aftertouch
+void send_midi_poly_aftertouch(uint8_t channel, uint8_t note, uint8_t pressure);
+
 // Check if USB MIDI is mounted/ready
 bool is_midi_ready(void);
 

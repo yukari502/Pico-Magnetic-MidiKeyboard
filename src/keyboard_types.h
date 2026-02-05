@@ -27,6 +27,7 @@ typedef struct {
     uint32_t t1_time;         // Timestamp when T1 was crossed
     uint8_t velocity;          // Calculated velocity
     uint8_t active_midi_note; // The MIDI note number actually sent (for Note Off)
+    uint8_t last_pressure;    // Last sent aftertouch value
 } Key;
 
 #endif

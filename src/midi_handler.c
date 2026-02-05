@@ -32,3 +32,17 @@ void send_midi_note_off(uint8_t channel, uint8_t note) {
     
     tud_midi_stream_write(cable_num, note_off, 3);
 }
+
+void send_midi_poly_aftertouch(uint8_t channel, uint8_t note, uint8_t pressure) {
+    if (!tud_midi_mounted()) return;
+
+    uint8_t cable_num = 0;
+    
+    // Polyphonic Key Pressure (0xA0)
+    // Status: 0xA0 | Channel
+    // Data 1: Note Number
+    // Data 2: Pressure Value
+    uint8_t msg[3] = { 0xA0 | (channel & 0x0F), note, pressure };
+    
+    tud_midi_stream_write(cable_num, msg, 3);
+}

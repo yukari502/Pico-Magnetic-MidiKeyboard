@@ -107,7 +107,19 @@ MidiKeyboard/
 逻辑: 循环切换多路复用器通道 0-12，加入微小延迟以等待信号稳定，然后填充缓冲区。
 重要性: 确保数据采集的同步性。
 
-## 6. 编译指南
+## 6. 固件烧录 (Firmware Flashing)
+
+如果您不想从源码编译，可以直接使用 `build` 目录中已经生成好的固件：
+
+*   **文件路径:** `build/MidiKeyboard.uf2`
+*   **使用方法:**
+    1.  按住 Raspberry Pi Pico 上的 **BOOTSEL** 按钮。
+    2.  通过 USB 将 Pico 连接到电脑（此时电脑会识别为一个 U 盘）。
+    3.  松开按钮。
+    4.  将 `MidiKeyboard.uf2` 文件直接拖入该 U 盘中。
+    5.  Pico 会自动重启，键盘即可正常使用。
+
+## 7. 编译指南 (Build from Source)
 
 **前置要求:**
 *   CMake & Ninja
