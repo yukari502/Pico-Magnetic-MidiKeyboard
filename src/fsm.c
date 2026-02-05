@@ -66,6 +66,7 @@ void process_key_state(Key *key, uint32_t timestamp_us, uint8_t key_index) {
 
                 send_midi_note_on(0, midi_note, key->velocity);
                 key->state = KEY_STATE_NOTE_ON; // <--- CRITICAL FIX: prevents spam
+                key->last_pressure = 0; // Reset aftertouch pressure
                 
                 // Temporary Print for Debugging (Simulate MIDI Send)
                 // printf("ON: Vel=%d (dt=%dus)\n", key->velocity, delta_t);
@@ -88,6 +89,28 @@ void process_key_state(Key *key, uint32_t timestamp_us, uint8_t key_index) {
                 
                 // Temporary Print
                 // printf("OFF\n");
+            } else {
+                // --- Polyphonic Aftertouch Logic ---
+                // Map pressure from "Aftertouch Start" (e.g. 0.45) to 1.0
+                // This allows the user to press harder to trigger effects
+                const float AT_START = 0.45f;
+                
+                uint8_t pressure = 0;
+                if (pos > AT_START) {
+                    float ratio = (pos - AT_START) / (1.0f - AT_START);
+                    if (ratio > 1.0f) ratio = 1.0f;
+                    pressure = (uint8_t)(ratio * 127.0f);
+                }
+
+                // Send only if changed significantly (Anti-Flood)
+                // Using a delta > 1 to filter noise
+                int delta = (int)pressure - (int)key->last_pressure;
+                if (delta < 0) delta = -delta;
+
+                if (delta > 2) { 
+                    send_midi_poly_aftertouch(0, key->active_midi_note, pressure);
+                    key->last_pressure = pressure;
+                }
             }
             break;
             
